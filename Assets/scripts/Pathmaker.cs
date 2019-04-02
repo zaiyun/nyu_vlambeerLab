@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // MAZE PROC GEN LAB
 // all students: complete steps 1-6, as listed in this file
@@ -11,29 +12,80 @@ using UnityEngine;
 
 public class Pathmaker : MonoBehaviour {
 
-// STEP 2: ============================================================================================
-// translate the pseudocode below
+    // STEP 2: ============================================================================================
+    // translate the pseudocode below
 
-//	DECLARE CLASS MEMBER VARIABLES:
-//	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
-//	Declare a public Transform called floorPrefab, assign the prefab in inspector;
-//	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
+    //	DECLARE CLASS MEMBER VARIABLES:
+    //	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
+    //	Declare a public Transform called floorPrefab, assign the prefab in inspector;
+    //	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
+   private int counter = 0;
+    int limit;
+    public Transform [] floorPrefab =new Transform [3];
+    public Transform pathmakerSpherePrefab;
+    float x;
+    public  int total = 0;
+    Color c = new Color();
 
 
-	void Update () {
-//		If counter is less than 50, then:
-//			Generate a random number from 0.0f to 1.0f;
-//			If random number is less than 0.25f, then rotate myself 90 degrees;
-//				... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
-//				... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
-//			// end elseIf
+       private void Start()
+    {
+        limit = Random.Range(50, 120);
+        c = Random.ColorHSV();
 
-//			Instantiate a floorPrefab clone at current position;
-//			Move forward ("forward", as in, the direction I'm currently facing) by 5 units;
-//			Increment counter;
-//		Else:
-//			Destroy my game object; 		// self destruct if I've made enough tiles already
-	}
+    }
+    void Update () {
+       
+        if (counter < limit && total<100)
+        {
+             x = Random.Range(0.0f, 1.0f);
+          
+            if (x < 0.25f)
+            {
+                this.transform.Rotate(0, 90, 0);
+
+            }else if (0.25f < x && x < 0.5f)
+            {
+                this.transform.Rotate(0, -90, 0);
+            }else if(0.99f<x && x < 1.0f)
+            {
+               
+                 Instantiate(pathmakerSpherePrefab, this.transform.position,Quaternion.identity);
+                
+            }
+
+            instantiate();
+          
+            this.transform.Translate(Vector3.forward * 5);
+            counter++;
+
+
+        }
+        else
+        {
+           Destroy(this.gameObject);
+        }
+     
+        //		If counter is less than 50, then:
+        //			Generate a random number from 0.0f to 1.0f;
+        //			If random number is less than 0.25f, then rotate myself 90 degrees;
+        //				... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
+        //				... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
+        //			// end elseIf
+
+        //			Instantiate a floorPrefab clone at current position;
+        //			Move forward ("forward", as in, the direction I'm currently facing) by 5 units;
+        //			Increment counter;
+        //		Else:
+        //			Destroy my game object; 		// self destruct if I've made enough tiles already
+    }
+    private void instantiate()
+    {
+        Transform floor;
+       floor= Instantiate(floorPrefab[(int)Random.Range(0,3)], this.transform.position, Quaternion.identity);
+        floor.GetComponent<MeshRenderer>().material.color = c;
+        total+= 1;
+    }
 
 } // end of class scope
 
